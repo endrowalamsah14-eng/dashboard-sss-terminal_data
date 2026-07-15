@@ -21,7 +21,7 @@ def apply_index_1(df):
 # ==============================================================================
 # 🎯 1. CONFIG CORE & COMPATIBLE EXECUTIVE DARK THEME
 # ==============================================================================
-BASE_DIR = ","
+BASE_DIR = ""
 LIVE_DB_NAME = "spx_terminal_data.db"
 SECRET_KEY_GIEEM = "GieeemSPX2026"
 
@@ -131,7 +131,7 @@ def evaluasi_status_kompartemen(nilai, tipe="selisih"):
 # ==============================================================================
 # 🔒 3. SPECIAL PROTOCOL: ACCESS CONTROL FOR BACKDATE BANK DATA
 # ==============================================================================
-TARGET_DB_PATH = os.path.join(BASE_DIR, LIVE_DB_NAME)
+TARGET_DB_PATH = LIVE_DB_NAME
 
 with st.sidebar:
     st.markdown("<h2 style='color:#a78bfa; text-align:center;'>🔒 CONTROL ROOM</h2>", unsafe_allow_html=True)
