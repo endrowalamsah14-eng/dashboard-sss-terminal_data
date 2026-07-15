@@ -615,6 +615,8 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
     # ==========================================================================
     def render_compact_bunderan(pct, title, sub_text):
         color = "#00E676" if pct >= 100 else ("#FF1744" if pct < 30 else "#FF9100")
+        if "OFF" in str(sub_text).upper():
+            color = "#78909C"  # Mode OFF berwarna abu-abu netral
         deg = min(360, int((pct / 100) * 360)) if pct > 0 else 0
         return f"""
         <div style="background-color: #1E232F; padding: 12px 8px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #2E3545; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
@@ -675,12 +677,16 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                 df_fms_unique['outbound_weight_kg'] = pd.to_numeric(df_fms_unique['outbound_weight_kg'].astype(str).str.replace(',', ''), errors='coerce').fillna(0.0)
             
             w_act = df_fms_unique.loc[mask_contract, 'outbound_weight_kg'].sum() if 'outbound_weight_kg' in df_fms_unique.columns else 0.0
-            pct_vis = (w_act / t_weight) * 100 if t_weight > 0 else 0.0
             
-            if w_act >= t_weight:
-                sub_txt = "🟢 ACHIEVED"
+            if t_weight == 0.0:
+                pct_vis = 0.0
+                sub_txt = "⚪ OFF"
             else:
-                sub_txt = f"⚠️ SISA: -{int(t_weight - w_act):,} Kg"
+                pct_vis = (w_act / t_weight) * 100
+                if w_act >= t_weight:
+                    sub_txt = "🟢 ACHIEVED"
+                else:
+                    sub_txt = f"⚠️ SISA: -{int(t_weight - w_act):,} Kg"
             
             title_gauge = f"{icon} {v_name} ({key_dest})"
             gauge_items.append({"title": title_gauge, "pct": pct_vis, "sub": sub_txt})
@@ -829,17 +835,24 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                 )
                 
                 act_w = df_fms_unique.loc[mask_filtered, 'outbound_weight_kg'].sum() if 'outbound_weight_kg' in df_fms_unique.columns else 0.0
-                def_w = t_weight - act_w
-                pct = (act_w / t_weight * 100) if t_weight > 0 else 0.0
+                
+                if t_weight == 0.0:
+                    val_def = 0.0
+                    pct = 0.0
+                    lbl_def = "⚪ STATUS OFF"
+                    delta_text = "OFF"
+                else:
+                    def_w = t_weight - act_w
+                    val_def = max(0.0, def_w)
+                    pct = (act_w / t_weight * 100)
+                    lbl_def = "⚠️ KEKURANGAN DEFISIT" if def_w > 0 else "✅ TARGET ACHIEVED"
+                    delta_text = f"{pct:.1f}% dari Target" if def_w > 0 else "100%+"
                 
                 st.markdown(f"##### {icon} Vendor: **{v_name}** | Key Destination: **{k_dest}** *(Group: {len(g_dests)} DC)*")
                 col_z1, col_z2, col_z3 = st.columns(3)
                 col_z1.metric("Actual Perolehan", f"{act_w:,.2f} Kg")
                 col_z2.metric("Target Baseline Contract", f"{t_weight:,.2f} Kg")
-                
-                lbl_def = "⚠️ KEKURANGAN DEFISIT" if def_w > 0 else "✅ TARGET ACHIEVED"
-                val_def = max(0.0, def_w)
-                col_z3.metric(lbl_def, f"{val_def:,.2f} Kg", delta=f"{pct:.1f}% dari Target" if def_w > 0 else "100%+")
+                col_z3.metric(lbl_def, f"{val_def:,.2f} Kg", delta=delta_text)
                 
                 df_chart = pd.DataFrame({
                     'Status Target': ['Actual Perolehan', 'Kekurangan Target Defisit'],
