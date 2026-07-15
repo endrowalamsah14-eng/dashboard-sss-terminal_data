@@ -452,7 +452,7 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     # 9. Selisih Count TO (Diambil dari subquery terdeduplikasi agar bebas dari cartesian join)
     sum_fms_to = 0
     if not df_fms_unique.empty:
-        for col_t in ['outbound_to', 'outbound_hv_to', 'outbound_dg_to']:
+        for col_t in ['outbound_to']:
             if col_t in df_fms_unique.columns:
                 sum_fms_to += pd.to_numeric(df_fms_unique[col_t], errors='coerce').sum() or 0
                 
