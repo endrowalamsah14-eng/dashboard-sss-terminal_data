@@ -21,7 +21,7 @@ def apply_index_1(df):
 # ==============================================================================
 # 🎯 1. CONFIG CORE & COMPATIBLE EXECUTIVE DARK THEME
 # ==============================================================================
-BASE_DIR = BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130"
 LIVE_DB_NAME = "spx_terminal_data.db"
 SECRET_KEY_GIEEM = "GieeemSPX2026"
 
@@ -361,7 +361,8 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     if not df_fms_unique.empty:
         df_fms_temp = df_fms_unique.copy()
         fms_to_series = pd.Series(0, index=df_fms_temp.index)
-        for col_t in ['outbound_to', 'outbound_hv_to', 'outbound_dg_to']:
+        # REVISI SAKRAL POINT 9: Hanya menghitung 'outbound_to'
+        for col_t in ['outbound_to']:
             if col_t in df_fms_temp.columns:
                 fms_to_series += pd.to_numeric(df_fms_temp[col_t], errors='coerce').fillna(0)
         df_fms_temp['fms_to_count'] = fms_to_series.astype(int)
@@ -449,7 +450,7 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     lbl_pt8 = "GOOD" if double_to_count == 0 else "FAIL"
     cls_pt8 = "alert-good" if double_to_count == 0 else "alert-fail"
     
-    # 9. Selisih Count TO (Diambil dari subquery terdeduplikasi agar bebas dari cartesian join)
+    # 9. Selisih Count TO (REVISI SAKRAL: Hanya menghitung 'outbound_to' di sisi FMS)
     sum_fms_to = 0
     if not df_fms_unique.empty:
         for col_t in ['outbound_to']:
