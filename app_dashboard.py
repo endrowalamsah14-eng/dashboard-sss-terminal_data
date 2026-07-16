@@ -21,7 +21,7 @@ def apply_index_1(df):
 # ==============================================================================
 # 🎯 1. CONFIG CORE & COMPATIBLE EXECUTIVE DARK THEME
 # ==============================================================================
-BASE_DIR = r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130" if os.path.exists(r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130") else ""
+BASE_DIR = r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130" if os.path.exists(r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130") else os.getcwd()
 LIVE_DB_NAME = "spx_terminal_data.db"
 SECRET_KEY_GIEEM = "GieeemSPX2026"
 
@@ -486,7 +486,7 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     with c_left:
         st.markdown(f'<div class="{cls_lh}"><b>Point 4. Selisih Linehaul (Unique ID):</b> {selisih_lh} Trips Mismatch ({lbl_lh} | {pct_lh:.1f}%)</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="{cls_cetak}"><b>Point 5. SLA Cetak SJ:</b> {lbl_cetak} ({pct_sla_cetak:.1f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_batch}"><b>Point 6. Performance Batch:</b> {lbl_batch} ({pct_batch:.1f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_batch}"><b>Point 6. Performance Batch:</b> {lbl_batch} ({pct_batch:.1f}%) from {raw_batch_count} Rows</div>', unsafe_allow_html=True)
         st.markdown(f'<div class="{cls_gdgp}"><b>Point 7. GDGP Status GDocs:</b> {lbl_gdgp} ({pct_gdgp:.1f}%)</div>', unsafe_allow_html=True)
     with c_right:
         st.markdown(f'<div class="{cls_pt8}"><b>Point 8. Double TO in GDocs:</b> {double_to_count} TO ({lbl_pt8} | {pct_pt8:.1f}%)</div>', unsafe_allow_html=True)
@@ -1016,16 +1016,22 @@ elif pilihan_tab == "🏆 TAB.3 SPECIAL OVERALL GDGP":
                 st.markdown("#### 💾 Ekstraksi & Download Kamar Berkas")
                 opsi_dl = st.selectbox("Pilih file neng Bank Data sing arep mbok download:", options=all_dbs)
                 
-                try:
-                    with open(os.path.join(BASE_DIR, opsi_dl), "rb") as f_dl:
-                        st.download_button(
-                            label=f"📥 DOWNLOAD BERKAS {opsi_dl}",
-                            data=f_dl,
-                            file_name=opsi_dl,
-                            mime="application/octet-stream"
-                        )
-                except Exception as e:
-                    st.error(f"Gagal membaca file untuk di-download: {str(e)}")
+                # 🔑 Proteksi Sandi Simpel tapi Kokoh (Cukup Masukkan sandi Gieeem)
+                sandi_dl = st.text_input("🔑 Masukkan Sandi Otoritas Download:", type="password", key="pass_download_db")
+                
+                if sandi_dl == SECRET_KEY_GIEEM:
+                    try:
+                        with open(os.path.join(BASE_DIR, opsi_dl), "rb") as f_dl:
+                            st.download_button(
+                                label=f"📥 DOWNLOAD BERKAS {opsi_dl}",
+                                data=f_dl,
+                                file_name=opsi_dl,
+                                mime="application/octet-stream"
+                            )
+                    except Exception as e:
+                        st.error(f"Gagal membaca file untuk di-download: {str(e)}")
+                elif sandi_dl:
+                    st.error("❌ Sandi Salah! Hanya Gieeem sing ngerti!")
             else:
                 st.warning("Gudang kosong utowo file basis data ora teko-toko.")
         else:
