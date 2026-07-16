@@ -21,7 +21,7 @@ def apply_index_1(df):
 # ==============================================================================
 # 🎯 1. CONFIG CORE & COMPATIBLE EXECUTIVE DARK THEME
 # ==============================================================================
-BASE_DIR = r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130" if os.path.exists(r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130") else ""
+BASE_DIR = r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130" if os.path.exists(r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130") else ","
 LIVE_DB_NAME = "spx_terminal_data.db"
 SECRET_KEY_GIEEM = "GieeemSPX2026"
 
