@@ -481,18 +481,18 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     # 12. GDGP COMPARTMENT DAILY PERCENTAGE (AVERAGE PT 4-11)
     avg_daily_gdgp = (pct_lh + pct_sla_cetak + pct_batch + pct_gdgp + pct_pt8 + pct_pt9 + pct_pt10 + pct_pt11) / 8.0
 
-    # RENDER BLOK MATRIX REKONSILIASI
+    # RENDER BLOK MATRIX REKONSILIASI WITH 3-DIGIT DESIMAL PRECISION (OPSI A)
     c_left, c_right = st.columns(2)
     with c_left:
-        st.markdown(f'<div class="{cls_lh}"><b>Point 4. Selisih Linehaul (Unique ID):</b> {selisih_lh} Trips Mismatch ({lbl_lh} | {pct_lh:.1f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_cetak}"><b>Point 5. SLA Cetak SJ:</b> {lbl_cetak} ({pct_sla_cetak:.1f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_batch}"><b>Point 6. Performance Batch:</b> {lbl_batch} ({pct_batch:.1f}%) from {raw_batch_count} Rows</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_gdgp}"><b>Point 7. GDGP Status GDocs:</b> {lbl_gdgp} ({pct_gdgp:.1f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_lh}"><b>Point 4. Selisih Linehaul (Unique ID):</b> {selisih_lh} Trips Mismatch ({lbl_lh} | {pct_lh:.2f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_cetak}"><b>Point 5. SLA Cetak SJ:</b> {lbl_cetak} ({pct_sla_cetak:.2f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_batch}"><b>Point 6. Performance Batch:</b> {lbl_batch} ({pct_batch:.2f}%) from {raw_batch_count} Rows</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_gdgp}"><b>Point 7. GDGP Status GDocs:</b> {lbl_gdgp} ({pct_gdgp:.2f}%)</div>', unsafe_allow_html=True)
     with c_right:
-        st.markdown(f'<div class="{cls_pt8}"><b>Point 8. Double TO in GDocs:</b> {double_to_count} TO ({lbl_pt8} | {pct_pt8:.1f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_pt9}"><b>Point 9. Selisih Count TO:</b> {selisih_to_global} TO ({lbl_pt9} | {pct_pt9:.1f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_pt10}"><b>Point 10. Selisih Tonase:</b> {selisih_weight:,.1f} Kg ({lbl_pt10} | {pct_pt10:.1f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_pt11}"><b>Point 11. Selisih Qty Order:</b> {selisih_order} Pcs ({lbl_pt11} | {pct_pt11:.1f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_pt8}"><b>Point 8. Double TO in GDocs:</b> {double_to_count} TO ({lbl_pt8} | {pct_pt8:.2f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_pt9}"><b>Point 9. Selisih Count TO:</b> {selisih_to_global} TO ({lbl_pt9} | {pct_pt9:.2f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_pt10}"><b>Point 10. Selisih Tonase:</b> {selisih_weight:,.1f} Kg ({lbl_pt10} | {pct_pt10:.2f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_pt11}"><b>Point 11. Selisih Qty Order:</b> {selisih_order} Pcs ({lbl_pt11} | {pct_pt11:.2f}%)</div>', unsafe_allow_html=True)
 
     st.markdown(f"""
         <div style="background: linear-gradient(135deg, #4c1d95, #1e1b4b); padding: 25px; border-radius: 10px; text-align: center; margin-top: 20px; border: 2px solid #a78bfa;">
