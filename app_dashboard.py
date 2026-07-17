@@ -115,18 +115,27 @@ def hitung_akurasi_relatif(nilai_fms, nilai_gdocs):
 
 def evaluasi_status_kompartemen(nilai, tipe="selisih"):
     if tipe == "selisih":
-        if nilai == 0: return "GOOD", 100.0, "alert-good"
-        elif nilai > 0: return "FAIL", max(0.0, 100.0 - (nilai * 5)), "alert-fail"
-        else: return "WARNING", 50.0, "alert-warn"
+        if nilai == 0: 
+            return "GOOD", 100.0, "alert-good"
+        elif nilai > 0: 
+            return "FAIL", max(0.0, 100.0 - (nilai * 5)), "alert-fail"
+        else: 
+            return "WARNING", 50.0, "alert-warn"
     elif tipe == "sla_cetak":
-        if nilai >= 100.0: return "ACHIEVE", 100.0, "alert-good"
-        else: return "LATE", nilai, "alert-fail"
+        if nilai >= 100.0: 
+            return "ACHIEVE", 100.0, "alert-good"
+        else: 
+            return "LATE", nilai, "alert-fail"
     elif tipe == "batch":
-        if nilai >= 50.0: return "OK", nilai, "alert-good"
-        else: return "POOR", nilai, "alert-fail"
+        if nilai >= 50.0: 
+            return "OK", nilai, "alert-good"
+        else: 
+            return "POOR", nilai, "alert-fail"
     elif tipe == "gdgp_status":
-        if nilai >= 50.0: return "GOOD", nilai, "alert-good"
-        else: return "FAIL", nilai, "alert-fail"
+        if nilai >= 50.0: 
+            return "GOOD", nilai, "alert-good"
+        else: 
+            return "FAIL", nilai, "alert-fail"
 
 # ==============================================================================
 # 🔒 3. SPECIAL PROTOCOL: ACCESS CONTROL FOR BACKDATE BANK DATA
@@ -163,6 +172,9 @@ with st.sidebar:
         if sandi_input:
             st.error("❌ Sandi Salah! Hanya Gieeem sing ngerti!")
         st.info("🔒 RUNNING LIVE MODE (LOCK ON)")
+    
+    # PART 1: Lacak Lokasi Absolut Target Database Jalur Lokal vs Server
+    st.sidebar.warning(f"Jalur DB: {os.path.abspath(TARGET_DB_PATH)}")
 
 # ==============================================================================
 # 🖥️ 4. DATA INGESTION ENGINE (DB SOURCE LALU LINTAS KANTOR)
@@ -361,6 +373,7 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     if not df_fms_unique.empty:
         df_fms_temp = df_fms_unique.copy()
         fms_to_series = pd.Series(0, index=df_fms_temp.index)
+        
         # REVISI SAKRAL POINT 9: Hanya menghitung 'outbound_to'
         for col_t in ['outbound_to']:
             if col_t in df_fms_temp.columns:
@@ -442,21 +455,16 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
         double_to_count = sum(v_counts > 1)
         list_dup_to = v_counts[v_counts > 1].index
         cols_needed = []
-        for c in ['vendor', 'lt_number', 'to_number']:
-            if c in df_gdocs.columns: cols_needed.append(c)
+        for c in ['vendor', 'lt_number', 'to_number', 'gross_weight', 'qty_parcel', 'remarks', 'nopol', 'vehicle_type']:
+            if c in df_gdocs.columns: 
+                cols_needed.append(c)
         df_detail_pt8 = df_gdocs[df_gdocs['to_number'].isin(list_dup_to)][cols_needed].drop_duplicates()
-    
-    pct_pt8 = max(0.0, 100.0 - (double_to_count * 2))
+        
+    pct_pt8 = hitung_akurasi_relatif(raw_gdocs_count, raw_gdocs_count - double_to_count)
     lbl_pt8 = "GOOD" if double_to_count == 0 else "FAIL"
     cls_pt8 = "alert-good" if double_to_count == 0 else "alert-fail"
-    
-    # 9. Selisih Count TO (REVISI SAKRAL: Hanya menghitung 'outbound_to' di sisi FMS)
-    sum_fms_to = 0
-    if not df_fms_unique.empty:
-        for col_t in ['outbound_to']:
-            if col_t in df_fms_unique.columns:
-                sum_fms_to += pd.to_numeric(df_fms_unique[col_t], errors='coerce').sum() or 0
-                
+                    
+    sum_fms_to = df_recon['fms_to_count'].sum() if not df_recon.empty else 0
     selisih_to_global = int(sum_fms_to - raw_gdocs_count)
     pct_pt9 = hitung_akurasi_relatif(sum_fms_to, raw_gdocs_count)
     lbl_pt9 = "GOOD" if selisih_to_global == 0 else "FAIL"
@@ -484,22 +492,22 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     # RENDER BLOK MATRIX REKONSILIASI WITH 3-DIGIT DESIMAL PRECISION (OPSI A)
     c_left, c_right = st.columns(2)
     with c_left:
-        st.markdown(f'<div class="{cls_lh}"><b>Point 4. Selisih Linehaul (Unique ID):</b> {selisih_lh} Trips Mismatch ({lbl_lh} | {pct_lh:.2f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_cetak}"><b>Point 5. SLA Cetak SJ:</b> {lbl_cetak} ({pct_sla_cetak:.2f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_batch}"><b>Point 6. Performance Batch:</b> {lbl_batch} ({pct_batch:.2f}%) from {raw_batch_count} Rows</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_gdgp}"><b>Point 7. GDGP Status GDocs:</b> {lbl_gdgp} ({pct_gdgp:.2f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_lh}"><b>Point 4. Selisih Linehaul (Unique ID):</b> {selisih_lh} Trips Mismatch ({lbl_lh} | {pct_lh:.3f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_cetak}"><b>Point 5. SLA Cetak SJ:</b> {lbl_cetak} ({pct_sla_cetak:.3f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_batch}"><b>Point 6. Performance Batch:</b> {lbl_batch} ({pct_batch:.3f}%) from {raw_batch_count} Rows</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_gdgp}"><b>Point 7. GDGP Status GDocs:</b> {lbl_gdgp} ({pct_gdgp:.3f}%)</div>', unsafe_allow_html=True)
     with c_right:
-        st.markdown(f'<div class="{cls_pt8}"><b>Point 8. Double TO in GDocs:</b> {double_to_count} TO ({lbl_pt8} | {pct_pt8:.2f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_pt9}"><b>Point 9. Selisih Count TO:</b> {selisih_to_global} TO ({lbl_pt9} | {pct_pt9:.2f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_pt10}"><b>Point 10. Selisih Tonase:</b> {selisih_weight:,.1f} Kg ({lbl_pt10} | {pct_pt10:.2f}%)</div>', unsafe_allow_html=True)
-        st.markdown(f'<div class="{cls_pt11}"><b>Point 11. Selisih Qty Order:</b> {selisih_order} Pcs ({lbl_pt11} | {pct_pt11:.2f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_pt8}"><b>Point 8. Double TO in GDocs:</b> {double_to_count} TO ({lbl_pt8} | {pct_pt8:.3f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_pt9}"><b>Point 9. Selisih Count TO:</b> {selisih_to_global} TO ({lbl_pt9} | {pct_pt9:.3f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_pt10}"><b>Point 10. Selisih Tonase:</b> {selisih_weight:,.3f} Kg ({lbl_pt10} | {pct_pt10:.3f}%)</div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="{cls_pt11}"><b>Point 11. Selisih Qty Order:</b> {selisih_order} Pcs ({lbl_pt11} | {pct_pt11:.3f}%)</div>', unsafe_allow_html=True)
 
     st.markdown(f"""
-        <div style="background: linear-gradient(135deg, #4c1d95, #1e1b4b); padding: 25px; border-radius: 10px; text-align: center; margin-top: 20px; border: 2px solid #a78bfa;">
-            <h2 style="margin:0; color:#f5f3ff;">🏆 Point 12. GDGP COMPARTMENT DAILY PERCENTAGE</h2>
-            <h1 style="margin:10px 0; font-size:48px; color:#ffffff;">{avg_daily_gdgp:.2f}%</h1>
-            <p style="margin:0; color:#c084fc; font-size:14px;">Indeks Integrasi Sistem Administrasi Aktual Menunggal</p>
-        </div>
+    <div style="background: linear-gradient(135deg, #4c1d95, #1e1b4b); padding: 25px; border-radius: 10px; text-align: center; margin-top: 20px; border: 2px solid #a78bfa;">
+        <h2 style="margin:0; color:#f5f3ff;">🏆 Point 12. GDGP COMPARTMENT DAILY PERCENTAGE</h2>
+        <h1 style="margin:10px 0; font-size:48px; color:#ffffff;">{avg_daily_gdgp:.3f}%</h1>
+        <p style="margin:0; color:#c084fc; font-size:14px;">Indeks Integrasi Sistem Administrasi Aktual Menunggal</p>
+    </div>
     """, unsafe_allow_html=True)
 
     # BLOCK DETAIL DATA COMPARTMENT EXPANDER (FORENSIK INTERAKTIF)
@@ -507,10 +515,11 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     st.markdown("### 🔍 RUANG FORENSIK DETAIL ARSIP DATA (TAB.1)")
     
     # 📂 Detail Point 4
+    # PART 2: Penambahan kolom outbound_to, outbound_order, dan outbound_weight_kg di Ruang Forensik
     exp4 = st.expander("📂 Detail Point 4 - Kasus Penyimpangan Selisih Transaksi Linehaul")
     with exp4:
         if selisih_lh != 0 and not df_fms_unique.empty:
-            cols_p4_show = [c for c in ['agency_name', 'lh_trip_number', 'vehicle_plate_number', 'vehicle_type'] if c in df_fms_unique.columns]
+            cols_p4_show = [c for c in ['agency_name', 'lh_trip_number', 'vehicle_plate_number', 'vehicle_type', 'outbound_to', 'outbound_order', 'outbound_weight_kg'] if c in df_fms_unique.columns]
             df_p4 = df_fms_unique[df_fms_unique['lh_trip_number'].isin(missing_in_gdocs)][cols_p4_show].drop_duplicates().reset_index(drop=True)
             df_p4 = apply_index_1(df_p4)
             st.dataframe(df_p4, use_container_width=True)
@@ -518,13 +527,14 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
             st.success("Clear! Data sinkron total rapi jali.")
 
     # 📂 Detail Point 8
-    exp8 = st.expander("📂 Detail Point 8 - Temuan Double TO in GDocs (Vendor Urutan Terdepan)")
+    exp8 = st.expander("📂  Detail Point 8 - Temuan Double TO in GDocs (Vendor Urutan Terdepan)")
     with exp8:
-        if not df_detail_pt8.empty: 
-            df_detail_pt8 = df_detail_pt8.reset_index(drop=True)
+        if not df_detail_pt8.empty:
+            cols_p8_show = [c for c in ['vendor', 'lt_number', 'to_number', 'gross_weight', 'qty_parcel', 'remarks', 'nopol', 'vehicle_type'] if c in df_detail_pt8.columns]
+            df_detail_pt8 = df_detail_pt8[cols_p8_show].reset_index(drop=True)
             df_detail_pt8 = apply_index_1(df_detail_pt8)
             st.dataframe(df_detail_pt8, use_container_width=True)
-        else: 
+        else:
             st.success("Clear! Gak ono data dobel TO blas.")
 
     # 📂 Detail Point 9 (Forensik Selisih Count TO per Trip ID)
@@ -557,7 +567,6 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     with exp10: 
         df_detail_pt10 = pd.DataFrame()
         if not df_recon.empty:
-            # Menggunakan presisi pembulatan 4 desimal untuk eliminasi anomali float (Bug 2 Fix)
             df_recon['diff_weight'] = (df_recon['fms_weight'] - df_recon['gdocs_weight']).round(4)
             df_detail_pt10 = df_recon[df_recon['diff_weight'] != 0].copy()
             if not df_detail_pt10.empty:
@@ -704,7 +713,7 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
     st.markdown("---")
 
     # ==========================================================================
-    # PENAMBAHAN FITUR: HIGHLIGHT TOTAL ACTUAL UNIT (DEPART, LOADING, ASSIGN)
+    # AMANKAN STRUKTUR BAWAAN: HIGHLIGHT TOTAL ACTUAL UNIT
     # ==========================================================================
     st.markdown("### 📊 HIGHLIGHT ACTUAL UNIT & TONASE PER VENDOR (DEPARTED, LOADING, ASSIGNED)")
     
@@ -877,8 +886,7 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                     height=300                  # Tinggi chart yang proporsional untuk 2 bar data
                 )
                 
-                # Menggunakan width="stretch" agar tidak memicu warning di terminal Streamlit Anda
-                st.altair_chart(chart, width="stretch")
+                st.altair_chart(chart, use_container_width=True)
                 st.markdown("---")
 
     # ==========================================================================
@@ -907,8 +915,10 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                 with st.expander(f"🚚 {plat} [{vendor}] | {slot} | Total Multi-Drop: {tot_dest} Destinasi ({tot_w:,.1f} Kg)"):
                     cols_show = [c for c in ['lh_trip_number', 'parsed_dest', 'parsed_cat', 'trip_type', 'outbound_weight_kg'] if c in df_plat.columns]
                     st.dataframe(apply_index_1(df_plat[cols_show]), use_container_width=True)
-        else: st.info("Gak ono armada neng njero dok muat (0 Loading).")
-    else: st.info("Gak ono armada neng njero dok muat (0 Loading).")
+        else: 
+            st.info("Gak ono armada neng njero dok muat (0 Loading).")
+    else: 
+         st.info("Gak ono armada neng njero dok muat (0 Loading).")
 
     # 5. Live Actual Unit Status Assign
     st.markdown("#### 5. Live Actual Unit Status Assign (Source: FMS Pending)")
@@ -924,8 +934,10 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                 with st.expander(f"🟡 ASSIGNED: {plat} [{vendor}] | {slot} | Multi-Drop: {tot_dest} Destinasi"):
                     cols_show = [c for c in ['lh_trip_number', 'parsed_dest', 'parsed_cat', 'trip_type'] if c in df_plat.columns]
                     st.dataframe(apply_index_1(df_plat[cols_show]), use_container_width=True)
-        else: st.info("Gak ono armada standby sing ke-assign.")
-    else: st.info("Gak ono armada standby sing ke-assign.")
+        else: 
+            st.info("Gak ono armada standby sing ke-assign.")
+    else: 
+        st.info("Gak ono armada standby sing ke-assign.")
 
     # 6. Grand Total Actual Unit Depart
     st.markdown("#### 6. Grand Total Actual Unit Depart (Source: FMS Unique Clean)")
@@ -1016,10 +1028,11 @@ elif pilihan_tab == "🏆 TAB.3 SPECIAL OVERALL GDGP":
                 st.markdown("#### 💾 Ekstraksi & Download Kamar Berkas")
                 opsi_dl = st.selectbox("Pilih file neng Bank Data sing arep mbok download:", options=all_dbs)
                 
-                # 🔑 Proteksi Sandi Simpel tapi Kokoh (Cukup Masukkan sandi Gieeem)
+                # 🔑 Proteksi Sandi Simpel tapi Kokoh
                 sandi_dl = st.text_input("🔑 Masukkan Sandi Otoritas Download:", type="password", key="pass_download_db")
                 
-                if sandi_dl == SECRET_KEY_GIEEM:
+                # PART 3: Mengganti keaslian hardcode string sandi download menjadi pembacaan environment aman st.secrets
+                if sandi_dl == st.secrets["sandi_otoritas"]:
                     try:
                         with open(os.path.join(BASE_DIR, opsi_dl), "rb") as f_dl:
                             st.download_button(
@@ -1117,7 +1130,6 @@ else:
             ).astype(float)
             
             df_air_display = pd.concat([df_air_total, pivot_air]).fillna(0.0)
-            # Dibiarkan index aslinya agar Matriks Label tidak rusak (namun tetap Full Width)
             st.dataframe(df_air_display, use_container_width=True)
                 
         with col_m1_right:
