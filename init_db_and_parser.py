@@ -115,25 +115,32 @@ def run_pipeline():
                     # Inisialisasi status: anggep kabeh baris resik dhisik
                     is_inbound_filled = pd.Series(False, index=df.index)
                     
-                    # Cek kolom string 'inbound_to'
+                    # Cek kolom string 'inbound_to' nganggo metode resik-resik regex
                     if 'inbound_to' in df.columns:
                         s_to = df['inbound_to'].astype(str).str.strip().str.lower()
-                        # Ditambahno '0.0' ben lek diwoco float karo pandas gak ke-flag isi
-                        is_empty_to = s_to.isin(['0/0', '0', '0.0', '', 'nan', 'none', 'null'])
+                        # Ngguak kabeh unsur angka 0, slash, titik, minus, lan spasi
+                        cleaned_to = s_to.str.replace(r'[0/.\s-]', '', regex=True)
+                        # Dianggep kosong lek string bawaane keyword kosong UTAWA sawise diresiki dadi string kosong
+                        is_empty_to = s_to.isin(['', 'nan', 'none', 'null']) | (cleaned_to == '')
                         is_inbound_filled |= ~is_empty_to
                         
                     # Cek kolom numerik inbound liyane
                     for col in ['inbound_hv_to', 'inbound_dg_to', 'inbound_order', 'inbound_weight_kg']:
                         if col in df.columns:
+                            s_num = df[col].astype(str).str.strip().str.lower()
+                            cleaned_num = s_num.str.replace(r'[0/.\s-]', '', regex=True)
+                            is_empty_num = s_num.isin(['', 'nan', 'none', 'null']) | (cleaned_num == '')
+                            
                             num_val = pd.to_numeric(df[col], errors='coerce').fillna(0)
-                            is_inbound_filled |= (num_val > 0)
+                            # Beneran keisi lek dudu format kosong/nol LAN nilai numerike luweh soko 0
+                            is_inbound_filled |= (~is_empty_num & (num_val > 0))
                             
                     # Goleki kabeh unique 'lh_trip_number' sing salah siji barise keisi data inbound
                     if 'lh_trip_number' in df.columns:
                         forbidden_trips = df.loc[is_inbound_filled, 'lh_trip_number'].dropna().unique()
-                        # Resikno lek misal ono trip number sing beneran kosong string
-                        forbidden_trips = [t for t in forbidden_trips if str(t).strip() != '']
-                        # Tendang langsung pasangane sisan
+                        # Singkirno kode trip dummy/kosong ben gak salah sikat massal
+                        forbidden_trips = [t for t in forbidden_trips if str(t).strip() not in ['', 'nan', 'none', 'null', '0', '0.0']]
+                        # Tendang langsung sepasang trip sing nemu data inbound
                         df = df[~df['lh_trip_number'].isin(forbidden_trips)]
                     else:
                         print("[!] Peringatan: Kolom 'lh_trip_number' gak ketemu! Nyaring per baris biasa.")
