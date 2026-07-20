@@ -108,46 +108,32 @@ def run_pipeline():
                 else:
                     print("[!] Peringatan: Kolom 'trip_type' gak ketemu! Data gak disaring.")
 
-                # 2b. FITUR TAMBAHAN REVISI: Filter data inbound (1 Trip = 2 Row, tendang karone lek salah siji keisi)
+                # 2b. FITUR TAMBAHAN: Filter data inbound (1 Trip = 2 Row, hapus sak pasangane lek keisi)
                 if target_table == "staging_fms_handedover":
                     rows_before_inbound = len(df)
+                    inbound_cols = ['inbound_to', 'inbound_hv_to', 'inbound_dg_to', 'inbound_order', 'inbound_weight_kg']
                     
-                    # Inisialisasi status: anggep kabeh baris resik dhisik
-                    is_inbound_filled = pd.Series(False, index=df.index)
+                    # Bikin status awal: anggep kabeh baris resik (False artine ora keisi)
+                    is_filled = pd.Series(False, index=df.index)
                     
-                    # Cek kolom string 'inbound_to' nganggo metode resik-resik regex
-                    if 'inbound_to' in df.columns:
-                        s_to = df['inbound_to'].astype(str).str.strip().str.lower()
-                        # Ngguak kabeh unsur angka 0, slash, titik, minus, lan spasi
-                        cleaned_to = s_to.str.replace(r'[0/.\s-]', '', regex=True)
-                        # Dianggep kosong lek string bawaane keyword kosong UTAWA sawise diresiki dadi string kosong
-                        is_empty_to = s_to.isin(['', 'nan', 'none', 'null']) | (cleaned_to == '')
-                        is_inbound_filled |= ~is_empty_to
-                        
-                    # Cek kolom numerik inbound liyane
-                    for col in ['inbound_hv_to', 'inbound_dg_to', 'inbound_order', 'inbound_weight_kg']:
+                    for col in inbound_cols:
                         if col in df.columns:
-                            s_num = df[col].astype(str).str.strip().str.lower()
-                            cleaned_num = s_num.str.replace(r'[0/.\s-]', '', regex=True)
-                            is_empty_num = s_num.isin(['', 'nan', 'none', 'null']) | (cleaned_num == '')
-                            
-                            num_val = pd.to_numeric(df[col], errors='coerce').fillna(0)
-                            # Beneran keisi lek dudu format kosong/nol LAN nilai numerike luweh soko 0
-                            is_inbound_filled |= (~is_empty_num & (num_val > 0))
-                            
-                    # Goleki kabeh unique 'lh_trip_number' sing salah siji barise keisi data inbound
+                            # Ubah dadi string, di-trim spasi, lan ilangno '.0' bawaan float pandas
+                            val_str = df[col].astype(str).str.strip().str.replace('.0', '', regex=False).str.lower()
+                            # Dianggep beneran keisi lek ORA klebu nang daftar nilai kosong/nol iki
+                            is_filled |= ~val_str.isin(['0', '0/0', '0 / 0', '', 'nan', 'none', 'null'])
+                    
+                    # Lek ono sing keisi, goleki trip number sing bermasalah lan hapus sak pasangane
                     if 'lh_trip_number' in df.columns:
-                        forbidden_trips = df.loc[is_inbound_filled, 'lh_trip_number'].dropna().unique()
-                        # Singkirno kode trip dummy/kosong ben gak salah sikat massal
-                        forbidden_trips = [t for t in forbidden_trips if str(t).strip() not in ['', 'nan', 'none', 'null', '0', '0.0']]
-                        # Tendang langsung sepasang trip sing nemu data inbound
-                        df = df[~df['lh_trip_number'].isin(forbidden_trips)]
+                        bad_trips = df.loc[is_filled, 'lh_trip_number'].dropna().unique()
+                        # Singkirno kode trip dummy/kosong ben gak salah sikat
+                        bad_trips = [t for t in bad_trips if str(t).strip() not in ['', 'nan', 'none', 'null']]
+                        df = df[~df['lh_trip_number'].isin(bad_trips)]
                     else:
-                        print("[!] Peringatan: Kolom 'lh_trip_number' gak ketemu! Nyaring per baris biasa.")
-                        df = df[~is_inbound_filled]
+                        df = df[~is_filled]
                         
                     rows_after_inbound = len(df)
-                    print(f"[i] Filter Inbound Sukses: Ngguak {rows_before_inbound - rows_after_inbound} baris data (Trip sing keisi inbound resmi ditendang total).")
+                    print(f"[i] Filter Inbound Sukses: Ngguak {rows_before_inbound - rows_after_inbound} baris data (Trip keisi inbound resmi ditendang total).")
 
                 # 3. Tambah kolom asal file
                 df['source_file'] = file
