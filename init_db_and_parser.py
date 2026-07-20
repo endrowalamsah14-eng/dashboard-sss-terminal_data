@@ -117,8 +117,10 @@ def run_pipeline():
                     
                     # Cek kolom string 'inbound_to'
                     if 'inbound_to' in df.columns:
-                        s_to = df['inbound_to'].astype(str).str.strip()
-                        is_inbound_filled |= ~s_to.isin(['0/0', '0', '', 'nan', 'none', 'None'])
+                        s_to = df['inbound_to'].astype(str).str.strip().str.lower()
+                        # Ditambahno '0.0' ben lek diwoco float karo pandas gak ke-flag isi
+                        is_empty_to = s_to.isin(['0/0', '0', '0.0', '', 'nan', 'none', 'null'])
+                        is_inbound_filled |= ~is_empty_to
                         
                     # Cek kolom numerik inbound liyane
                     for col in ['inbound_hv_to', 'inbound_dg_to', 'inbound_order', 'inbound_weight_kg']:
@@ -128,8 +130,10 @@ def run_pipeline():
                             
                     # Goleki kabeh unique 'lh_trip_number' sing salah siji barise keisi data inbound
                     if 'lh_trip_number' in df.columns:
-                        forbidden_trips = df.loc[is_inbound_filled, 'lh_trip_number'].unique()
-                        # Tendang langsung pasangane sisan (kedua baris sing duwe trip number kasebut ditolak mlebu)
+                        forbidden_trips = df.loc[is_inbound_filled, 'lh_trip_number'].dropna().unique()
+                        # Resikno lek misal ono trip number sing beneran kosong string
+                        forbidden_trips = [t for t in forbidden_trips if str(t).strip() != '']
+                        # Tendang langsung pasangane sisan
                         df = df[~df['lh_trip_number'].isin(forbidden_trips)]
                     else:
                         print("[!] Peringatan: Kolom 'lh_trip_number' gak ketemu! Nyaring per baris biasa.")
