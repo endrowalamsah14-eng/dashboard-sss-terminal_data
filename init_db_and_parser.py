@@ -108,37 +108,28 @@ def run_pipeline():
                 else:
                     print("[!] Peringatan: Kolom 'trip_type' gak ketemu! Data gak disaring.")
 
-                # 2b. FITUR TAMBAHAN: Filter data inbound (1 Trip = 2 Row, hapus sak pasangane lek keisi)
+                # 2b. FITUR TAMBAHAN IDE BARU: Filter adhedhasar keisine kolom 'unloaded_time'
                 if target_table == "staging_fms_handedover":
                     rows_before_inbound = len(df)
                     
-                    # Status awal: anggep kabeh baris resik dhisik (False = gak ono inbound)
-                    is_filled = pd.Series(False, index=df.index)
-                    
-                    # 1. Cek kolom string 'inbound_to' sacara teliti
-                    if 'inbound_to' in df.columns:
-                        s_to = df['inbound_to'].astype(str).str.strip().str.lower()
-                        s_to = s_to.str.replace(r'\s+', '', regex=True)   # '0 / 0' -> '0/0'
-                        s_to = s_to.str.replace(r'\.0+$', '', regex=True)  # '0.0' -> '0'
-                        is_filled |= ~s_to.isin(['0', '0/0', '', 'nan', 'none', 'null', '-'])
+                    if 'unloaded_time' in df.columns and 'lh_trip_number' in df.columns:
+                        # Resik-resik string nggo mriksa isine unloaded_time
+                        s_unloaded = df['unloaded_time'].astype(str).str.strip().str.lower()
                         
-                    # 2. Cek kolom numerik liyane nggae komparasi angka murni (anti-gagal format float)
-                    for col in ['inbound_hv_to', 'inbound_dg_to', 'inbound_order', 'inbound_weight_kg']:
-                        if col in df.columns:
-                            num_val = pd.to_numeric(df[col], errors='coerce').fillna(0)
-                            is_filled |= (num_val > 0)
-                            
-                    # 3. Goleki trip number sing beneran keisi inbound, banjur tendang sak pasangane sisan
-                    if 'lh_trip_number' in df.columns:
-                        bad_trips = df.loc[is_filled, 'lh_trip_number'].dropna().unique()
-                        bad_trips = [t for t in bad_trips if str(t).strip() not in ['', 'nan', 'none', 'null', '0', '0.0']]
+                        # Dianggep keisi TANGGAL lek dudu strip (-), udu kosong, lan dudu NaN/NULL bawaan Pandas
+                        is_unloaded_filled = df['unloaded_time'].notna() & (~s_unloaded.isin(['', 'nan', 'none', 'null', '-']))
+                        
+                        # Goleki kabeh unique 'lh_trip_number' sing salah siji barise wis keisi tanggal
+                        bad_trips = df.loc[is_unloaded_filled, 'lh_trip_number'].dropna().unique()
+                        bad_trips = [t for t in bad_trips if str(t).strip() not in ['', 'nan', 'none', 'null']]
+                        
+                        # Hapus sak pasangane sisan (trip number sing wis sukses di-unload)
                         df = df[~df['lh_trip_number'].isin(bad_trips)]
                     else:
-                        print("[!] Peringatan: Kolom 'lh_trip_number' gak ketemu! Nyaring per baris biasa.")
-                        df = df[~is_filled]
+                        print("[!] Peringatan: Kolom 'unloaded_time' utawa 'lh_trip_number' ora ketemu!")
                         
                     rows_after_inbound = len(df)
-                    print(f"[i] Filter Inbound Sukses: Ngguak {rows_before_inbound - rows_after_inbound} baris data (Trip keisi inbound resmi ditendang total).")
+                    print(f"[i] Filter Unloaded Time Sukses: Ngguak {rows_before_inbound - rows_after_inbound} baris data (Trip wis di-unload resmi ditendang total).")
 
                 # 3. Tambah kolom asal file
                 df['source_file'] = file
