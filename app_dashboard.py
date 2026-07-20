@@ -24,7 +24,7 @@ def apply_index_1(df):
 # ==============================================================================
 BASE_DIR = r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130" if os.path.exists(r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130") else os.getcwd()
 LIVE_DB_NAME = "spx_terminal_data.db"
-SECRET_KEY_GIEEM = "GieeemSPX2026"
+SECRET_KEY_GIEEM = st.secrets["SECRET_KEY_GIEEM"]
 
 st.set_page_config(
     page_title="🔥 SSS MM PERFORMANCE DASHBOARD MASTERPIECE",
