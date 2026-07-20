@@ -111,25 +111,30 @@ def run_pipeline():
                 # 2b. FITUR TAMBAHAN: Filter data inbound (1 Trip = 2 Row, hapus sak pasangane lek keisi)
                 if target_table == "staging_fms_handedover":
                     rows_before_inbound = len(df)
-                    inbound_cols = ['inbound_to', 'inbound_hv_to', 'inbound_dg_to', 'inbound_order', 'inbound_weight_kg']
                     
-                    # Bikin status awal: anggep kabeh baris resik (False artine ora keisi)
+                    # Status awal: anggep kabeh baris resik dhisik (False = gak ono inbound)
                     is_filled = pd.Series(False, index=df.index)
                     
-                    for col in inbound_cols:
+                    # 1. Cek kolom string 'inbound_to' sacara teliti
+                    if 'inbound_to' in df.columns:
+                        s_to = df['inbound_to'].astype(str).str.strip().str.lower()
+                        s_to = s_to.str.replace(r'\s+', '', regex=True)   # '0 / 0' -> '0/0'
+                        s_to = s_to.str.replace(r'\.0+$', '', regex=True)  # '0.0' -> '0'
+                        is_filled |= ~s_to.isin(['0', '0/0', '', 'nan', 'none', 'null', '-'])
+                        
+                    # 2. Cek kolom numerik liyane nggae komparasi angka murni (anti-gagal format float)
+                    for col in ['inbound_hv_to', 'inbound_dg_to', 'inbound_order', 'inbound_weight_kg']:
                         if col in df.columns:
-                            # Ubah dadi string, di-trim spasi, lan ilangno '.0' bawaan float pandas
-                            val_str = df[col].astype(str).str.strip().str.replace('.0', '', regex=False).str.lower()
-                            # Dianggep beneran keisi lek ORA klebu nang daftar nilai kosong/nol iki
-                            is_filled |= ~val_str.isin(['0', '0/0', '0 / 0', '', 'nan', 'none', 'null'])
-                    
-                    # Lek ono sing keisi, goleki trip number sing bermasalah lan hapus sak pasangane
+                            num_val = pd.to_numeric(df[col], errors='coerce').fillna(0)
+                            is_filled |= (num_val > 0)
+                            
+                    # 3. Goleki trip number sing beneran keisi inbound, banjur tendang sak pasangane sisan
                     if 'lh_trip_number' in df.columns:
                         bad_trips = df.loc[is_filled, 'lh_trip_number'].dropna().unique()
-                        # Singkirno kode trip dummy/kosong ben gak salah sikat
-                        bad_trips = [t for t in bad_trips if str(t).strip() not in ['', 'nan', 'none', 'null']]
+                        bad_trips = [t for t in bad_trips if str(t).strip() not in ['', 'nan', 'none', 'null', '0', '0.0']]
                         df = df[~df['lh_trip_number'].isin(bad_trips)]
                     else:
+                        print("[!] Peringatan: Kolom 'lh_trip_number' gak ketemu! Nyaring per baris biasa.")
                         df = df[~is_filled]
                         
                     rows_after_inbound = len(df)
