@@ -9,8 +9,9 @@ import altair as alt
 import subprocess
 
 # ==============================================================================
-# SUNTIKAN ENGINE TAMBAHAN (Letakkan di mana saja sebelum blok Tab)
+# 🛠️ HELPER & VISUAL ENGINE BLOCK
 # ==============================================================================
+
 def apply_index_1(df):
     """Fungsi helper untuk merubah index dataframe dimulai dari 1 (bukan 0)"""
     if df is not None and not df.empty:
@@ -19,9 +20,50 @@ def apply_index_1(df):
         return df_copy
     return df
 
+
+def render_bunderan_persentase(percentage, label, subtext):
+    """Helper Visual nggunakno SVG Inline Premium (Anti-Crash WinPython Portable)"""
+    pct = min(max(float(percentage), 0.0), 100.0)
+    stroke_dash = (pct / 100.0) * 283
+    color = "#10b981" if pct >= 100.0 else "#ef4444"
+    svg_html = f"""
+    <div style="text-align: center; background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin: 5px; min-width: 160px;">
+    <p style="margin:0 0 8px 0; font-weight:bold; color:#f1f5f9; font-size:14px;">{label}</p>
+    <svg width="100" height="100" viewBox="0 0 120 120">
+    <circle cx="60" cy="60" r="45" stroke="#334155" stroke-width="10" fill="transparent" />
+    <circle cx="60" cy="60" r="45" stroke="{color}" stroke-width="10" fill="transparent"
+    stroke-dasharray="283" stroke-dashoffset="{283 - stroke_dash}" stroke-linecap="round"
+    transform="rotate(-90 60 60)" />
+    <text x="50%" y="50%" text-anchor="middle" fill="#ffffff" font-weight="bold" font-size="16px" dy=".3em">{percentage:.1f}%</text>
+    </svg>
+    <p style="margin:8px 0 0 0; font-size:11px; color:{color}; font-weight:500;">{subtext}</p>
+    </div>
+    """
+    return svg_html
+
+
+def render_compact_bunderan(pct, title, sub_text):
+    """Fungsi Render Gauge Kompak untuk Tab 2 (Ukuran Diperbesar & Text Wrapped)"""
+    color = "#00E676" if pct >= 100 else ("#FF1744" if pct < 30 else "#FF9100")
+    if "OFF" in str(sub_text).upper():
+        color = "#78909C" 
+    deg = min(360, int((pct / 100) * 360)) if pct > 0 else 0
+    return f"""
+    <div style="background-color: #1E232F; padding: 12px 8px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #2E3545; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+    <div style="font-size: 12px; font-weight: bold; color: #FFFFFF; margin-bottom: 8px; white-space: normal; line-height: 1.3; min-height: 32px;" title="{title}">{title}</div>
+    <div style="position: relative; width: 86px; height: 86px; margin: 0 auto; background: conic-gradient({color} {deg}deg, #2A303C 0deg); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+    <div style="width: 66px; height: 66px; background-color: #1E232F; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+    <span style="font-size: 13px; font-weight: bold; color: #FFFFFF;">{pct:.1f}%</span>
+    </div>
+    </div>
+    <div style="font-size: 11px; font-weight: 600; color: #B0BEC5; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{sub_text}</div>
+    </div>
+    """
+
 # ==============================================================================
 # 🎯 1. CONFIG CORE & COMPATIBLE EXECUTIVE DARK THEME
 # ==============================================================================
+
 BASE_DIR = r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130" if os.path.exists(r"C:\Users\5CG40413SD-SPXOps\Desktop\SSS-Terminal_Data\WinPython_Portable\WPy64-313130") else os.getcwd()
 LIVE_DB_NAME = "spx_terminal_data.db"
 SECRET_KEY_GIEEM = st.secrets["SECRET_KEY_GIEEM"]
@@ -44,26 +86,6 @@ st.markdown("""
  </style>
 """, unsafe_allow_html=True)
 
-# Helper Visual "Bunder-Bunder Sakti" nggunakno SVG Inline Premium (Anti-Crash WinPython Portable)
-def render_bunderan_persentase(percentage, label, subtext):
-    pct = min(max(float(percentage), 0.0), 100.0)
-    stroke_dash = (pct / 100.0) * 283
-    color = "#10b981" if pct >= 100.0 else "#ef4444"
-    svg_html = f"""
-    <div style="text-align: center; background: #1e293b; padding: 15px; border-radius: 8px; border: 1px solid #334155; margin: 5px; min-width: 160px;">
-    <p style="margin:0 0 8px 0; font-weight:bold; color:#f1f5f9; font-size:14px;">{label}</p>
-    <svg width="100" height="100" viewBox="0 0 120 120">
-    <circle cx="60" cy="60" r="45" stroke="#334155" stroke-width="10" fill="transparent" />
-    <circle cx="60" cy="60" r="45" stroke="{color}" stroke-width="10" fill="transparent"
-    stroke-dasharray="283" stroke-dashoffset="{283 - stroke_dash}" stroke-linecap="round"
-    transform="rotate(-90 60 60)" />
-    <text x="50%" y="50%" text-anchor="middle" fill="#ffffff" font-weight="bold" font-size="16px" dy=".3em">{percentage:.1f}%</text>
-    </svg>
-    <p style="margin:8px 0 0 0; font-size:11px; color:{color}; font-weight:500;">{subtext}</p>
-    </div>
-    """
-    return svg_html
-
 # Master List Filter Destinasi Sesuai Rekapan Forensik User
 BY_AIR_DEST_LIST = [
     "Abepura DC", "Alak DC", "Bacan Hub", "Baguala DC", "Balikpapan Barat DC", "Balikpapan DC", 
@@ -84,6 +106,7 @@ BY_SEA_DEST_LIST = [
 # ==============================================================================
 # 🧠 2. ENGINE INTELIJEN: REGEX PARSER & METRIC EVALUATOR
 # ==============================================================================
+
 def bedah_trip_name_via_regex(trip_name):
     if not trip_name or pd.isna(trip_name):
         return "Unknown", "Reguler", "Slot N/A"
@@ -105,6 +128,7 @@ def bedah_trip_name_via_regex(trip_name):
  
     return destination, category, slot
 
+
 def hitung_akurasi_relatif(nilai_fms, nilai_gdocs):
     if nilai_fms == 0 and nilai_gdocs == 0:
         return 100.0
@@ -113,6 +137,7 @@ def hitung_akurasi_relatif(nilai_fms, nilai_gdocs):
     selisih = abs(nilai_fms - nilai_gdocs)
     percent_error = (selisih / nilai_fms) * 100
     return max(0.0, min(100.0, 100.0 - percent_error))
+
 
 def evaluasi_status_kompartemen(nilai, tipe="selisih"):
     if tipe == "selisih":
@@ -141,6 +166,7 @@ def evaluasi_status_kompartemen(nilai, tipe="selisih"):
 # ==============================================================================
 # 🔒 3. SPECIAL PROTOCOL: ACCESS CONTROL FOR BACKDATE BANK DATA
 # ==============================================================================
+
 TARGET_DB_PATH = os.path.join(BASE_DIR, LIVE_DB_NAME)
 
 with st.sidebar:
@@ -174,29 +200,37 @@ with st.sidebar:
             st.error("❌ Sandi Salah! Hanya Gieeem sing ngerti!")
         st.info("🔒 RUNNING LIVE MODE (LOCK ON)")
  
-    # PART 1: Lacak Lokasi Absolut Target Database Jalur Lokal vs Server
     st.sidebar.warning(f"Jalur DB: {os.path.abspath(TARGET_DB_PATH)}")
 
 # ==============================================================================
 # 🖥️ 4. DATA INGESTION ENGINE (DB SOURCE LALU LINTAS KANTOR)
 # ==============================================================================
+
 if not os.path.exists(TARGET_DB_PATH):
     st.error(f"Berkas Basis Data `{os.path.basename(TARGET_DB_PATH)}` Gak Ketemu neng direktori!")
     st.stop()
 
 conn = sqlite3.connect(TARGET_DB_PATH)
 try:
-    df_fms_handedover = pd.read_sql_query("SELECT * FROM staging_fms_handedover", conn)
-    df_gdocs = pd.read_sql_query("SELECT * FROM gdocs_pulled_data", conn)
+    try:
+        df_fms_handedover = pd.read_sql_query("SELECT * FROM staging_fms_handedover", conn)
+    except Exception:
+        st.warning("⚠️ Tabel 'staging_fms_handedover' tidak ditemukan. Silakan ganti tanggal DB di kiri bawah.")
+        df_fms_handedover = pd.DataFrame()
+
+    try:
+        df_gdocs = pd.read_sql_query("SELECT * FROM gdocs_pulled_data", conn)
+    except Exception:
+        df_gdocs = pd.DataFrame()
  
     try: 
         df_batch = pd.read_sql_query("SELECT * FROM batch_records", conn)
-    except: 
+    except Exception: 
         df_batch = pd.DataFrame(columns=['status'])
  
     try: 
         df_fms_pending = pd.read_sql_query("SELECT * FROM staging_fms_pending", conn)
-    except: 
+    except Exception: 
         df_fms_pending = pd.DataFrame()
  
     df_config_library = pd.DataFrame([
@@ -204,7 +238,7 @@ try:
         {"VENDOR": "PBI", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 16000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
         {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 30000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
         {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 20000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
-        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 00.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
+        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 0.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "MEDAN", "TONASE TARGET (kg)": 500.0, "GROUP DESTINATION": "Medan DC, Medan Amplas DC, Percut Sei Tuan DC, Siborong-borong DC, Gunung Sitoli DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PONTIANAK", "TONASE TARGET (kg)": 600.0, "GROUP DESTINATION": "Pontianak DC, Pontianak 2 DC, Sungai Kakap DC, Ketapang Kalbar DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PALANGKA RAYA", "TONASE TARGET (kg)": 800.0, "GROUP DESTINATION": "Palangka Raya DC, Palangka Raya 2 DC"},
@@ -257,8 +291,9 @@ if not df_fms_handedover.empty and 'lh_trip_number' in df_fms_handedover.columns
         df_fms_unique = df_fms_handedover.drop_duplicates(subset=['lh_trip_number']).copy()
 
 # ==============================================================================
-# 🚀 5. FITUR BANK DATA BARU: AUTO CUT-OFF ENGINE 23:59 (LOGICAL CUTOFF - POINT 1)
+# 5. FITUR BANK DATA BARU: AUTO CUT-OFF ENGINE 23:59 (LOGICAL CUTOFF - POINT 1)
 # ==============================================================================
+
 now_time = datetime.now()
 yesterday_time = now_time - timedelta(days=1)
 
@@ -286,7 +321,7 @@ if not os.path.exists(cutoff_filepath):
                     t_col = pd.to_datetime(df_copy[col], errors='coerce')
                     mask = (t_col >= batas_awal) & (t_col <= batas_akhir)
                     return df_copy.loc[mask]
-            return df_copy # Return utuh jika tidak ditemukan kolom waktu (Fail-safe)
+            return df_copy
 
         df_fms_handedover_co = filter_logical_cutoff(df_fms_handedover)
         if not df_fms_handedover_co.empty:
@@ -330,6 +365,7 @@ if not os.path.exists(cutoff_filepath):
 # ==============================================================================
 # RENDER: TAB.1 ADMINISTRATION PERFORMANCE
 # ==============================================================================
+
 if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     st.title("📊 TAB.1 ADMINISTRATION PERFORMANCE")
     st.markdown(f"**Basis Data Terkunci:** `{os.path.basename(TARGET_DB_PATH)}` | **Mode:** Real-time Daily Audit (Auto Cut-Off 23:59)")
@@ -350,9 +386,6 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
 
     st.markdown("### 📐 Hasil Evaluasi Diktat Administrasi (Poin 4-11)")
  
-    # --------------------------------------------------------------------------
-    # MAINTENANCE BUG FIX: Peksa dadi numerik murni sakdurunge groupby (Anti-Crash TypeError Int+Str)
-    # --------------------------------------------------------------------------
     if not df_gdocs.empty:
         if 'gross_weight' in df_gdocs.columns:
             df_gdocs['gross_weight'] = pd.to_numeric(df_gdocs['gross_weight'].astype(str).str.replace(',', ''), errors='coerce').fillna(0.0)
@@ -440,7 +473,7 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
             durasi_menit = (t_dept - t_seal).dt.total_seconds() / 60
             late_cetak = sum(durasi_menit > 30)
             pct_sla_cetak = ( (len(durasi_menit) - late_cetak) / len(durasi_menit) ) * 100 if len(durasi_menit) > 0 else 100.0
-        except: 
+        except Exception: 
             pct_sla_cetak = 100.0
     lbl_cetak, _, cls_cetak = evaluasi_status_kompartemen(pct_sla_cetak, "sla_cetak")
  
@@ -521,12 +554,10 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
     </div>
     """, unsafe_allow_html=True)
 
-    # BLOCK DETAIL DATA COMPARTMENT EXPANDER (FORENSIK INTERAKTIF)
     st.markdown("---")
     st.markdown("### 🔍 RUANG FORENSIK DETAIL ARSIP DATA (TAB.1)")
  
     # 📂 Detail Point 4
-    # PART 2: Penambahan kolom outbound_to, outbound_order, dan outbound_weight_kg di Ruang Forensik
     exp4 = st.expander("📂 Detail Point 4 - Kasus Penyimpangan Selisih Transaksi Linehaul")
     with exp4:
         if selisih_lh != 0 and not df_fms_unique.empty:
@@ -548,7 +579,7 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
         else:
             st.success("Clear! Gak ono data dobel TO blas.")
 
-    # 📂 Detail Point 9 (Forensik Selisih Count TO per Trip ID)
+    # 📂 Detail Point 9
     exp9 = st.expander("📂 Detail Point 9 - Breakdown Vendor & LT (Count Total TO Unique)")
     with exp9: 
         df_detail_pt9 = pd.DataFrame()
@@ -573,7 +604,7 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
         else:
             st.success("Clear! Selisih Count TO nihil.")
 
-    # 📂 Detail Point 10 (Forensik Selisih Tonase per Trip ID)
+    # 📂 Detail Point 10
     exp10 = st.expander("📂 Detail Point 10 - Breakdown Berat Selisih Tonase per Vendor")
     with exp10: 
         df_detail_pt10 = pd.DataFrame()
@@ -598,7 +629,7 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
         else:
             st.success("Clear! Selisih Tonase nihil.")
 
-    # 📂 Detail Point 11 (Forensik Selisih Qty Order per Trip ID)
+    # 📂 Detail Point 11
     exp11 = st.expander("📂 Detail Point 11 - Breakdown Qty Parcel per Vendor/LT")
     with exp11: 
         df_detail_pt11 = pd.DataFrame()
@@ -624,40 +655,18 @@ if pilihan_tab == "📊 TAB.1 ADMINISTRATION PERFORMANCE":
             st.success("Clear! Selisih Qty Order nihil.")
 
 # ==============================================================================
-# RENDER: TAB.2 OPS PERFORMANCE (REFACTORED, FIXED & BULLETPROOF)
+# RENDER: TAB.2 OPS PERFORMANCE
 # ==============================================================================
+
 elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
     st.title("🚛 TAB.2 OPS PERFORMANCE (AKTUAL & LIVE CONDITION)")
     st.markdown("---")
  
-    # ==========================================================================
-    # FUNGSI RENDER GAUGE KOMPAK (UKURAN DIPERBESAR & TEXT WRAPPED)
-    # ==========================================================================
-    def render_compact_bunderan(pct, title, sub_text):
-        color = "#00E676" if pct >= 100 else ("#FF1744" if pct < 30 else "#FF9100")
-        if "OFF" in str(sub_text).upper():
-            color = "#78909C" # Mode OFF berwarna abu-abu netral
-        deg = min(360, int((pct / 100) * 360)) if pct > 0 else 0
-        return f"""
-        <div style="background-color: #1E232F; padding: 12px 8px; border-radius: 10px; text-align: center; margin-bottom: 15px; border: 1px solid #2E3545; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
-        <div style="font-size: 12px; font-weight: bold; color: #FFFFFF; margin-bottom: 8px; white-space: normal; line-height: 1.3; min-height: 32px;" title="{title}">{title}</div>
-        <div style="position: relative; width: 86px; height: 86px; margin: 0 auto; background: conic-gradient({color} {deg}deg, #2A303C 0deg); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <div style="width: 66px; height: 66px; background-color: #1E232F; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
-        <span style="font-size: 13px; font-weight: bold; color: #FFFFFF;">{pct:.1f}%</span>
-        </div>
-        </div>
-        <div style="font-size: 11px; font-weight: 600; color: #B0BEC5; margin-top: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{sub_text}</div>
-        </div>
-        """
-
-    # ==========================================================================
-    # 1. UPGRADE: DYNAMIC GAUGE GRID (ALL HARDBLOCK & SV FROM GDOCS)
-    # ==========================================================================
     st.markdown("### 📊 MAPPING PERSENTASE KETERCAPAIAN TARGET DESTINASI DARI HARDBLOCK & SV (State Locked: Auto Cut-Off 23:59)")
  
     if not df_fms_unique.empty and not df_config_library.empty:
         col_vendor = next((c for c in df_config_library.columns if 'VENDOR' in str(c).upper()), 'VENDOR')
-        col_code = next((c for c in df_config_library.columns if 'UNIQUE' in str(c).upper() or 'CODE' in str(c).upper()), 'UNIQUE CODE in LH Trip Name (CSV file FMS Handedover)')
+        col_code = next((c for c in df_config_library.columns if 'UNIQUE' in str(c).upper() or 'CODE' in str(c).upper()), 'UNIQUE CODE')
         col_key = next((c for c in df_config_library.columns if 'KEY' in str(c).upper() and 'GROUP' not in str(c).upper()), 'KEY DESTINATION')
         col_group = next((c for c in df_config_library.columns if 'GROUP' in str(c).upper()), 'GROUP DESTINATION')
         col_target = next((c for c in df_config_library.columns if 'TARGET' in str(c).upper() or 'TONASE' in str(c).upper()), 'TONASE TARGET (kg)')
@@ -678,7 +687,7 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                     t_weight = float(cleaned_target)
                 else:
                     t_weight = float(row[col_target])
-            except:
+            except Exception:
                 t_weight = 0.0
  
             g_dests = [d.strip() for d in str(row[col_group]).split(',') if d.strip()]
@@ -722,10 +731,6 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
             st.info("Data transaksi atau Configuration Library kosong.")
  
     st.markdown("---")
-
-    # ==========================================================================
-    # AMANKAN STRUKTUR BAWAAN: HIGHLIGHT TOTAL ACTUAL UNIT
-    # ==========================================================================
     st.markdown("### 📊 HIGHLIGHT ACTUAL UNIT & TONASE PER VENDOR (DEPARTED, LOADING, ASSIGNED)")
  
     plat_col_u = 'vehicle_plat_number' if 'vehicle_plat_number' in df_fms_unique.columns else ('vehicle_plate_number' if 'vehicle_plate_number' in df_fms_unique.columns else None)
@@ -788,6 +793,7 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
     # ==========================================================================
     # POIN 1: VOLUME & DESTINASI REGULER CATEGORY
     # ==========================================================================
+    df_p1 = pd.DataFrame()
     if not df_fms_unique.empty:
         mask_true_reguler = (
             (~df_fms_unique['lh_trip_name'].astype(str).str.contains('Hardblock', case=False, na=False, regex=False)) &
@@ -820,7 +826,7 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
  
     if not df_config_library.empty:
         col_vendor = next((c for c in df_config_library.columns if 'VENDOR' in str(c).upper()), 'VENDOR')
-        col_code = next((c for c in df_config_library.columns if 'UNIQUE' in str(c).upper() or 'CODE' in str(c).upper()), 'UNIQUE CODE in LH Trip Name (CSV file FMS Handedover)')
+        col_code = next((c for c in df_config_library.columns if 'UNIQUE' in str(c).upper() or 'CODE' in str(c).upper()), 'UNIQUE CODE')
         col_key = next((c for c in df_config_library.columns if 'KEY' in str(c).upper() and 'GROUP' not in str(c).upper()), 'KEY DESTINATION')
         col_group = next((c for c in df_config_library.columns if 'GROUP' in str(c).upper()), 'GROUP DESTINATION')
         col_target = next((c for c in df_config_library.columns if 'TARGET' in str(c).upper() or 'TONASE' in str(c).upper()), 'TONASE TARGET (kg)')
@@ -839,7 +845,7 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                     t_weight = float(cleaned_target)
                 else:
                     t_weight = float(row[col_target])
-            except:
+            except Exception:
                 t_weight = 0.0
  
             g_dests = [d.strip() for d in str(row[col_group]).split(',') if d.strip()]
@@ -879,14 +885,13 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                 'Tonase (Kg)': [act_w, val_def]
             })
  
-            # IMPLEMENTASI CHART BARU (STANDAR EUROPE COMPLIANCE - ANTI POTONG)
             chart = alt.Chart(df_chart).mark_bar(color='#0068c9').encode(
                 x=alt.X(
                     'Status Target:N', 
                     axis=alt.Axis(
-                        labelAngle=0, # Teks mendatar (horizontal) agar tidak tegak lurus ke bawah
-                        labelLimit=300, # Mencegah teks dipotong menggunakan titik-titik (...)
-                        title=None # Menghilangkan judul sumbu X agar visual lebih bersih
+                        labelAngle=0, 
+                        labelLimit=300, 
+                        title=None 
                     )
                 ),
                 y=alt.Y(
@@ -894,7 +899,7 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                     axis=alt.Axis(title='Tonase (Kg)')
                 )
             ).properties(
-                height=300 # Tinggi chart yang proporsional untuk 2 bar data
+                height=300 
             )
  
             st.altair_chart(chart, use_container_width=True)
@@ -982,12 +987,13 @@ elif pilihan_tab == "🚛 TAB.2 OPS PERFORMANCE":
                 with st.expander(f"⏱️ DURASI LOAD: {plat} [{vendor}] | Rata-rata Durasi: {avg_dur_str}"):
                     cols_show = [c for c in ['lh_trip_number', 'parsed_dest', 'trip_type', 'loading_time', 'actual_departure_time'] if c in df_plat.columns]
                     st.dataframe(apply_index_1(df_plat[cols_show]), use_container_width=True)
-        except: 
+        except Exception: 
             st.info("Gagal proses hitung durasi log.")
 
 # ==============================================================================
-# RENDER: TAB.3 SPECIAL OVERALL GDGP COMPARTMENT (REFACTORED & BULLETPROOF)
+# RENDER: TAB.3 SPECIAL OVERALL GDGP COMPARTMENT
 # ==============================================================================
+
 elif pilihan_tab == "🏆 TAB.3 SPECIAL OVERALL GDGP":
     st.title("🏆 TAB.3 PERFORMANCE OVERALL BANK DATA RECORDS")
     st.markdown("---")
@@ -1019,7 +1025,7 @@ elif pilihan_tab == "🏆 TAB.3 SPECIAL OVERALL GDGP":
                             "GDocs Rows": g_count, 
                             "Indeks GDGP (%)": round(idx_acc, 2)
                         })
-                except: 
+                except Exception: 
                     continue
  
             df_bank = pd.DataFrame(gudang_komparasi)
@@ -1039,10 +1045,8 @@ elif pilihan_tab == "🏆 TAB.3 SPECIAL OVERALL GDGP":
             st.markdown("#### 💾 Ekstraksi & Download Kamar Berkas")
             opsi_dl = st.selectbox("Pilih file neng Bank Data sing arep mbok download:", options=all_dbs)
  
-            # 🔑 Proteksi Sandi Simpel tapi Kokoh
             sandi_dl = st.text_input("🔑 Masukkan Sandi Otoritas Download:", type="password", key="pass_download_db")
  
-            # PART 3: Mengganti keaslian hardcode string sandi download menjadi pembacaan environment aman st.secrets
             if sandi_dl == st.secrets["sandi_otoritas"]:
                 try:
                     with open(os.path.join(BASE_DIR, opsi_dl), "rb") as f_dl:
@@ -1064,8 +1068,9 @@ elif pilihan_tab == "🏆 TAB.3 SPECIAL OVERALL GDGP":
         st.error("Direktori basis data (BASE_DIR) tidak ditemukan.")
 
 # ==============================================================================
-# RENDER KAMAR BARU: 📊 TONASE MONITORING FREIGHT (TRUE REAL MASTER LAYOUT)
+# RENDER KAMAR BARU: 📊 TONASE MONITORING FREIGHT
 # ==============================================================================
+
 else:
     st.title("📊 TONASE MONITORING FREIGHT (SURABAYA DC EXECUTIVE TRACKING)")
     st.markdown("---")
@@ -1090,9 +1095,6 @@ else:
             lambda x: x.split('>')[1].split('(')[0].strip() if '>' in x else x.strip()
         )
  
-        # ----------------------------------------------------------------------
-        # PINNED & HARDCODED REAL VENDOR MAPPING (STRICT FILTER)
-        # ----------------------------------------------------------------------
         VENDOR_REAL_AIR = ['CKL', 'Avia Cargo', 'Lion Parcel', 'AB Cargo', 'ESP', 'Cipta Global']
         VENDOR_REAL_SEA = ['DHS', 'CKL', 'PBI', 'AB Cargo']
         master_hours = [f"{str(h).zfill(2)}:00" for h in range(24)]
@@ -1112,7 +1114,7 @@ else:
         ]
  
         # ----------------------------------------------------------------------
-        # MATRIX 1: PEROLEISON TONASE PER DESTINASI & VENDOR STRATEGIS
+        # MATRIX 1: PEROLEH TONASE PER DESTINASI & VENDOR STRATEGIS
         # ----------------------------------------------------------------------
         st.markdown("### 🗂️ MATRIX 1: PEROLEHAN TONASE PER DESTINASI & VENDOR STRATEGIS (LOCKED STRUCTURE)")
         col_m1_left, col_m1_right = st.columns(2)
@@ -1172,7 +1174,7 @@ else:
         st.markdown("---")
  
         # ----------------------------------------------------------------------
-        # MATRIX 2: HOURLY TONNAGE TRACKING PER VENDOR (RITME OPERASIONAL)
+        # MATRIX 2: HOURLY TONNAGE TRACKING PER VENDOR
         # ----------------------------------------------------------------------
         st.markdown("### ⏱️ MATRIX 2: HOURLY TONNAGE TRACKING PER VENDOR (RITME OPERASIONAL - LOCKED ROWS/COLS)")
         col_m2_left, col_m2_right = st.columns(2)
