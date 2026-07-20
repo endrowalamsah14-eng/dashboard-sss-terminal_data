@@ -108,28 +108,36 @@ def run_pipeline():
                 else:
                     print("[!] Peringatan: Kolom 'trip_type' gak ketemu! Data gak disaring.")
 
-                # 2b. FITUR TAMBAHAN IDE BARU: Filter adhedhasar keisine kolom 'unloaded_time'
+                # 2b. FITUR TAMBAHAN: Logika Same-Day Protection (1 Trip = 2 Row)
                 if target_table == "staging_fms_handedover":
                     rows_before_inbound = len(df)
                     
                     if 'unloaded_time' in df.columns and 'lh_trip_number' in df.columns:
-                        # Resik-resik string nggo mriksa isine unloaded_time
-                        s_unloaded = df['unloaded_time'].astype(str).str.strip().str.lower()
+                        # Convert data tanggal sacara aman (sing dudu tanggal otomatis dadi NaT/Kosong)
+                        t_unloaded = pd.to_datetime(df['unloaded_time'], errors='coerce')
                         
-                        # Dianggep keisi TANGGAL lek dudu strip (-), udu kosong, lan dudu NaN/NULL bawaan Pandas
-                        is_unloaded_filled = df['unloaded_time'].notna() & (~s_unloaded.isin(['', 'nan', 'none', 'null', '-']))
+                        # Cek loading_time utawa loaded_time kanggo acuan tanggal barang muat
+                        t_loading = pd.to_datetime(df['loading_time'], errors='coerce') if 'loading_time' in df.columns else pd.Series(pd.NaT, index=df.index)
+                        if t_loading.isna().all() and 'loaded_time' in df.columns:
+                            t_loading = pd.to_datetime(df['loaded_time'], errors='coerce')
+                            
+                        # PROTEKSI SAME-DAY: Tanggal bongkar (unloaded) PODO KARO tanggal muat (loading)
+                        is_same_day = t_unloaded.notna() & t_loading.notna() & (t_unloaded.dt.date == t_loading.dt.date)
                         
-                        # Goleki kabeh unique 'lh_trip_number' sing salah siji barise wis keisi tanggal
-                        bad_trips = df.loc[is_unloaded_filled, 'lh_trip_number'].dropna().unique()
-                        bad_trips = [t for t in bad_trips if str(t).strip() not in ['', 'nan', 'none', 'null']]
+                        # Baris sing kudu ditendang: Beneran wis di-unload TAPI dudu kiriman Same-Day (kiriman dino wingi)
+                        is_bad_row = t_unloaded.notna() & ~is_same_day
                         
-                        # Hapus sak pasangane sisan (trip number sing wis sukses di-unload)
+                        # Goleki kabeh unique 'lh_trip_number' seko baris sing bad/inbound lawas
+                        bad_trips = df.loc[is_bad_row, 'lh_trip_number'].dropna().unique()
+                        bad_trips = [t for t in bad_trips if str(t).strip() not in ['', 'nan', 'none', 'null', '0', '0.0']]
+                        
+                        # Jebret! Tendang sak pasangane sisan seko database
                         df = df[~df['lh_trip_number'].isin(bad_trips)]
                     else:
                         print("[!] Peringatan: Kolom 'unloaded_time' utawa 'lh_trip_number' ora ketemu!")
                         
                     rows_after_inbound = len(df)
-                    print(f"[i] Filter Unloaded Time Sukses: Ngguak {rows_before_inbound - rows_after_inbound} baris data (Trip wis di-unload resmi ditendang total).")
+                    print(f"[i] Filter Same-Day Protection Sukses: Ngguak {rows_before_inbound - rows_after_inbound} baris data (Trip inbound lawas resmi ditendang).")
 
                 # 3. Tambah kolom asal file
                 df['source_file'] = file
