@@ -108,6 +108,29 @@ def run_pipeline():
                 else:
                     print("[!] Peringatan: Kolom 'trip_type' gak ketemu! Data gak disaring.")
 
+                # 2b. FITUR TAMBAHAN: Filter data inbound khusus kanggo kamar staging_fms_handedover
+                if target_table == "staging_fms_handedover":
+                    rows_before_inbound = len(df)
+                    
+                    # Inisialisasi status: anggep kabeh bersih dhisik (False artine gak ono isi inbound)
+                    is_inbound_filled = pd.Series(False, index=df.index)
+                    
+                    # Cek kolom string 'inbound_to' (dianggep isi lek dudu '0/0', '0', utawa kosong)
+                    if 'inbound_to' in df.columns:
+                        s_to = df['inbound_to'].astype(str).str.strip()
+                        is_inbound_filled |= ~s_to.isin(['0/0', '0', '', 'nan', 'none', 'None'])
+                        
+                    # Cek kolom numerik inbound liyane (dianggep isi lek luweh soko 0)
+                    for col in ['inbound_hv_to', 'inbound_dg_to', 'inbound_order', 'inbound_weight_kg']:
+                        if col in df.columns:
+                            num_val = pd.to_numeric(df[col], errors='coerce').fillna(0)
+                            is_inbound_filled |= (num_val > 0)
+                            
+                    # Ngguak data sing terbukti nduwe isi inbound (dilarang keras mlebu)
+                    df = df[~is_inbound_filled]
+                    rows_after_inbound = len(df)
+                    print(f"[i] Filter Inbound Sukses: Ngguak {rows_before_inbound - rows_after_inbound} baris data sing nduwe isi inbound.")
+
                 # 3. Tambah kolom asal file
                 df['source_file'] = file
                 
