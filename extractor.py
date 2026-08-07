@@ -86,7 +86,7 @@ def process_manifest_pdf():
 
                         # Itung langkah relative menganan soko koordinat index TO_IDX
                         try:
-                            # Adhedhasar susunan kolom PDF asli: TO -> Jmlh -> Berat -> Destination -> HV -> TO Type
+                            # Adhedhasar susunan kolom PDF asli: TO -> Jmlh -> Berat -> Destination -> HV -> TO Type -> DG Type
                             qty          = clean_row[to_idx + 1] if (to_idx + 1) < len(clean_row) else "1"
                             weight       = clean_row[to_idx + 2] if (to_idx + 2) < len(clean_row) else "0.0"
                             destination  = clean_row[to_idx + 3] if (to_idx + 3) < len(clean_row) else "N/A"
@@ -96,8 +96,12 @@ def process_manifest_pdf():
                             if not to_type_val or to_type_val == "":
                                 to_type_val = "Bag"
                                 
+                            dg_type_val  = clean_row[to_idx + 6] if (to_idx + 6) < len(clean_row) else "NULL"
+                            if not dg_type_val or str(dg_type_val).strip() == "":
+                                dg_type_val = "NULL"
+                                
                         except IndexError:
-                            qty, weight, destination, remarks_val, to_type_val = "1", "0.0", "N/A", "N", "Bag"
+                            qty, weight, destination, remarks_val, to_type_val, dg_type_val = "1", "0.0", "N/A", "N", "Bag", "NULL"
 
                         # Lebokno array jangkep (LT & Vendor dinamis sesuai halaman saiki)
                         extracted_rows.append({
@@ -110,7 +114,8 @@ def process_manifest_pdf():
                             'weight_kg': weight,
                             'jmlh_qty': qty,
                             'remarks': remarks_val.upper(),
-                            'to_type': to_type_val
+                            'to_type': to_type_val,
+                            'dg_type': dg_type_val
                         })
 
     if not extracted_rows:
@@ -136,9 +141,9 @@ def process_manifest_pdf():
         for row in extracted_rows:
             # Gunakan INSERT OR REPLACE nggo ngatasi error UNIQUE constraint failed!
             cursor.execute("""
-                INSERT OR REPLACE INTO staging_pdf_extracted (std_date, vendor, origin, destination, lh_trip_number, to_number, weight_kg, jmlh_qty, remarks, to_type)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (row['date'], row['vendor'], row['origin'], row['destination'], row['lh_trip_number'], row['to_number'], row['weight_kg'], row['jmlh_qty'], row['remarks'], row['to_type']))
+                INSERT OR REPLACE INTO staging_pdf_extracted (std_date, vendor, origin, destination, lh_trip_number, to_number, weight_kg, jmlh_qty, remarks, to_type, dg_type)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (row['date'], row['vendor'], row['origin'], row['destination'], row['lh_trip_number'], row['to_number'], row['weight_kg'], row['jmlh_qty'], row['remarks'], row['to_type'], row['dg_type']))
             success_staging += 1
             
             # Sinkronisasi sisan menyang tabel master produksi

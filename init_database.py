@@ -90,7 +90,8 @@ def init_spx_terminal_db():
             weight_kg REAL,
             jmlh_qty INTEGER,
             remarks TEXT,
-            to_type TEXT
+            to_type TEXT,
+            dg_type TEXT
         )
     ''')
     print("[✓] Kamar Staging 'staging_pdf_extracted' ready (Steril).")
