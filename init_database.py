@@ -15,6 +15,7 @@ def init_spx_terminal_db():
     cursor.execute("DROP TABLE IF EXISTS gdocs_pulled_data")
     cursor.execute("DROP TABLE IF EXISTS batch_records")
     cursor.execute("DROP TABLE IF EXISTS staging_fms_handedover")
+    cursor.execute("DROP TABLE IF EXISTS staging_pdf_extracted") # <--- INI TAMBAHANNYA BIAR AMAN DARI ERROR
     
     # 1. KAMAR UTAMA: production_size_manual_koli (URUTAN A-O PAS GDOCS + COL P + COL Q)
     cursor.execute('''
