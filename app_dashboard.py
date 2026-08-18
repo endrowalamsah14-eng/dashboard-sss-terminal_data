@@ -239,13 +239,13 @@ try:
         {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 30000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
         {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 42000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
         {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 10000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
-        {"VENDOR": "AB CARGO", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 0.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
-        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 0.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
-        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "MEDAN", "TONASE TARGET (kg)": 500.0, "GROUP DESTINATION": "Medan DC, Medan Amplas DC, Percut Sei Tuan DC, Siborong-borong DC, Gunung Sitoli DC"},
+        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 30000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
+        {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 8000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
+        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "MEDAN", "TONASE TARGET (kg)": 1600.0, "GROUP DESTINATION": "Medan DC, Medan Amplas DC, Percut Sei Tuan DC, Siborong-borong DC, Gunung Sitoli DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "AMBON", "TONASE TARGET (kg)": 1000.0, "GROUP DESTINATION": "Baguala DC"},
-        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PALANGKA RAYA", "TONASE TARGET (kg)": 1300.0, "GROUP DESTINATION": "Palangka Raya DC, Palangka Raya 2 DC"},
-        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 2800.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
-        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 2100.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"}
+        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PALANGKA RAYA", "TONASE TARGET (kg)": 2500.0, "GROUP DESTINATION": "Palangka Raya DC, Palangka Raya 2 DC"},
+        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 7000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
+        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 8400.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"}
     ])
 finally:
     conn.close()
