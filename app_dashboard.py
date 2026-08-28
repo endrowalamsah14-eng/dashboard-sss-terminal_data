@@ -245,7 +245,7 @@ try:
         {"VENDOR": "JEJE CONTAINER", "UNIQUE CODE": "FCL", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 7000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
         {"VENDOR": "KECE EXPRESS", "UNIQUE CODE": "FCL", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 3500.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarbaru DC, Banjarmasin 2 DC"},
         {"VENDOR": "JEJE CONTAINER", "UNIQUE CODE": "FCL", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 14000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarbaru DC, Banjarmasin 2 DC"},
-        {"VENDOR": "SAKAR", "UNIQUE CODE": "FCL", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 3500.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarbaru DC, Banjarmasin 2 DC"},
+        {"VENDOR": "SJL", "UNIQUE CODE": "FCL", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 3500.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarbaru DC, Banjarmasin 2 DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "MEDAN", "TONASE TARGET (kg)": 700.0, "GROUP DESTINATION": "Medan DC, Medan Amplas DC, Percut Sei Tuan DC, Siborong-borong DC, Gunung Sitoli DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "AMBON", "TONASE TARGET (kg)": 1000.0, "GROUP DESTINATION": "Baguala DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PALANGKA RAYA", "TONASE TARGET (kg)": 1800.0, "GROUP DESTINATION": "Palangka Raya DC, Palangka Raya 2 DC"},
