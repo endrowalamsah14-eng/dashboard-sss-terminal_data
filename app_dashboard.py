@@ -250,8 +250,9 @@ try:
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "AMBON", "TONASE TARGET (kg)": 1400.0, "GROUP DESTINATION": "Baguala DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PALANGKA RAYA", "TONASE TARGET (kg)": 4000.0, "GROUP DESTINATION": "Palangka Raya DC, Palangka Raya 2 DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 0.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
-        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 5600.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"}
-        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PONTIANAK", "TONASE TARGET (kg)": 1900.0, "GROUP DESTINATION": "Pontianak DC, Pontianak 2 DC"}
+        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 5600.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
+        {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PONTIANAK", "TONASE TARGET (kg)": 1900.0, "GROUP DESTINATION": "Pontianak DC, Pontianak 2 DC"},
+
     ])
 finally:
     conn.close()
