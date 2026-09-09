@@ -235,8 +235,8 @@ try:
     
     df_config_library = pd.DataFrame([
         {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 77000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
-        {"VENDOR": "PBI", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 33000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
-        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 30000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
+        {"VENDOR": "PBI", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 34000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
+        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 44000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
         {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 100000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
         {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 25000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
         {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 15000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
