@@ -234,12 +234,12 @@ try:
         df_fms_pending = pd.DataFrame()
     
     df_config_library = pd.DataFrame([
-        {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 77000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
-        {"VENDOR": "PBI", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 33000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
-        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 44000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
-        {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 740000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
-        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 25000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
-        {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 15000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
+        {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 65000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
+        {"VENDOR": "PBI", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 31000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
+        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 50000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
+        {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "MAKASSAR", "TONASE TARGET (kg)": 810000.0, "GROUP DESTINATION": "Makassar DC, Maros DC, Tamalanrea DC"},
+        {"VENDOR": "DHS", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BANJARMASIN", "TONASE TARGET (kg)": 19000.0, "GROUP DESTINATION": "Banjarmasin DC, Banjarmasin 2 DC, Banjarbaru DC"},
+        {"VENDOR": "CKL", "UNIQUE CODE": "Hardblock", "KEY DESTINATION": "BALIKPAPAN", "TONASE TARGET (kg)": 13000.0, "GROUP DESTINATION": "Balikpapan DC, Balikpapan 2 DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "MEDAN", "TONASE TARGET (kg)": 0.0, "GROUP DESTINATION": "Medan DC, Medan Amplas DC, Percut Sei Tuan DC, Siborong-borong DC, Gunung Sitoli DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "AMBON", "TONASE TARGET (kg)": 0.0, "GROUP DESTINATION": "Baguala DC"},
         {"VENDOR": "Lion Parcel", "UNIQUE CODE": "SV", "KEY DESTINATION": "PALANGKA RAYA", "TONASE TARGET (kg)": 0.0, "GROUP DESTINATION": "Palangka Raya DC, Palangka Raya 2 DC"},
